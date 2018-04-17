@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package publishing;
+
+// The Articles service provides CRUD API for articles.
+service Articles {
+  // Article returns a single article by ID
+  rpc Article (ArticleRequest) returns (ArticleReply) {}
+  // CreateArticle creates an article
+  rpc CreateArticle (CreateArticleRequest) returns (ArticleReply) {}
+  // UpdateArticle updates existing article
+  rpc UpdateArticle (UpdateArticleRequest) returns (ArticleReply) {}
+  // LatestArticles queries for latest articles by the given params
+  rpc LatestArticles (LatestArticlesRequest) returns (ArticlesReply) {}
+}
+
+message ArticleRequest {
+  uint32 id = 1;
+}
+
+message ArticleReply {
+  Article article = 1;
+}
+
+message ArticlesReply {
+  repeated Article articles = 1;
+}
+
+message CreateArticleRequest {
+  Article article = 1;
+}
+
+message UpdateArticleRequest {
+  Article article = 1;
+}
+
+message LatestArticlesRequest {
+  ArticleStatus status = 1;
+  uint32 count = 2;
+  string category = 3;
+}
+
+message Article {
+  uint32 id = 1;
+  string title = 2;
+  string body = 3;
+  string category = 4;
+  uint32 author_id = 5;
+  string author_name = 6;
+  google.protobuf.Timestamp created = 7;
+  google.protobuf.Timestamp modified = 8;
+  ArticleStatus status = 9;
+}
+
+enum ArticleStatus {
+  UNKNOWN = 0;
+  DRAFT = 1;
+  PUBLISHED = 2;
+  RETRACTED = 3;
+}
+
