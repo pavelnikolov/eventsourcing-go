@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package events;
+
+// The Gateway service accepts all incoming events and passes them to the centralised event store
+service Gateway {
+    // ArticleCreated accepts ArticleCreated events
+    rpc ArticleCreated (ArticleCreatedRequest) returns (ArticleCreatedReply) {}
+    // ArticleUpdated accepts ArticleUpdated events
+    rpc ArticleUpdated (ArticleUpdatedRequest) returns (ArticleUpdatedReply) {}
+    // ArticleRetracted accepts ArticleRetracted events
+    rpc ArticleRetracted (ArticleRetractedRequest) returns (ArticleRetractedReply) {}
+    // ArticleDraftCreated accepts ArticleDraftCreated events
+    rpc ArticleDraftCreated (ArticleDraftCreatedRequest) returns (ArticleDraftCreatedReply) {}
+    // ArticleDraftUpdated accepts ArticleDraftUpdated events
+    rpc ArticleDraftUpdated (ArticleDraftUpdatedRequest) returns (ArticleDraftUpdatedReply) {}
+}
+
+message ArticleCreatedRequest {
+    Article article = 1;
+    google.protobuf.Timestamp timestamp = 2;
+}
+message ArticleCreatedReply {}
+
+message ArticleUpdatedRequest {
+    Article article = 1;
+    google.protobuf.Timestamp timestamp = 2;
+}
+message ArticleUpdatedReply {}
+
+message ArticleRetractedRequest {
+    Article article = 1;
+    google.protobuf.Timestamp timestamp = 2;
+}
+message ArticleRetractedReply {}
+
+message ArticleDraftCreatedRequest {
+    Article article = 1;
+    google.protobuf.Timestamp timestamp = 2;
+}
+message ArticleDraftCreatedReply {}
+
+message ArticleDraftUpdatedRequest {
+    Article article = 1;
+    google.protobuf.Timestamp timestamp = 2;
+}
+message ArticleDraftUpdatedReply {}
+
+message Article {
+    uint32 id = 1;
+    string title = 2;
+    string body = 3;
+    string category = 4;
+    uint32 author_id = 5;
+    string author_name = 6;
+}

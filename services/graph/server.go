@@ -8,13 +8,14 @@ import (
 	"github.com/graph-gophers/graphql-go/relay"
 
 	pb "github.com/pavelnikolov/eventsourcing-go/publishing"
+	eventspb "github.com/pavelnikolov/eventsourcing-go/publishing/events"
 )
 
 const port = "4001"
 
 // StartServer starts the GraphQL server
-func StartServer(c pb.ArticlesClient) {
-	schema := graphql.MustParseSchema(Schema, &queryResolver{client: c})
+func StartServer(articlesClient pb.ArticlesClient, gatewayClient eventspb.GatewayClient) {
+	schema := graphql.MustParseSchema(Schema, &resolver{articlesClient: articlesClient, gatewayClient: gatewayClient})
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(page)
 	}))
