@@ -1,4 +1,4 @@
-# Event Sourcing + CQRS using Go Workshop
+# Event Sourcing + CQRS using Go Tutorial
 
 ## Background
 
@@ -9,11 +9,35 @@ Imagine that you are working for a large news publisher called **Fairflax Media*
 You have been tasked with breaking the huge monolith system into microservices and moving everything to Kuberentes.
 You prefer domain driven design, and believe that each database should only ever be owned by a single application. But as time goes by, you notice that many services need common data. You need to make sure that the data is consistent across all services and the query performance is reasonable.
 
+## Project Goals
+* Create a step-by-step tutorial for (opinionated) asynchronous microservices using Golang.
+* Each step of the tutorial should be in a separate git branch.
+* The `master` branch contains the initial state - tightly coupled services.
+* The `event-sourcing` branch should contain the Event Sourcing + CQRS implementation, containing asynchronous services, which are independent and easy to test.
+* Present actual problems and solve them using Event Sourcing + CQRS in Golang (with a few dependencies)
+* Use minimalistic approach and try to use fewer moving parts. (For example, the services are intentionally kept basic and do not include proper logging, tracing, metrics, feature flags, rate-limitting, docker containers, authentication, authorisation, K8s helm charts, docker-compose etc.).
+* In the initial branch DB is mocked up intentionally.
+* Demonstrate the use of in-memory data stores (e.g. BoltDB and Bleve).
+* Be more detailed and realistic than the regular _Hellow World_ example, but remain minimalistic.
+* Demonstrate the use of channels for the basic event broker.
+
+## Non-Goals
+* Try to be everything for everyone.
+* Demonstrate how to use Kafka/Kafka Streams.
+* Demonstrate how to use DistributedLog.
+* Guarantee exactly-once delivery.
+* Show how to save/restore snapshots and use pub/sub systems with limited retention periods (e.g. AWS Kinesis and Google Cloud Pub/Sub).
+* Implement server-less version, for example, using AWS Lambda or similar.
+* Use event sourcing with a decentralized events ledger/blockchain.
+
+## Target Audience
+This project is intended for anyone willing to switch to a asynchronous microservice architecture using Golang.
+
 ## Prerequisites
 
-- Go 1.6 or later
-- `GOPATH` [is set](https://golang.org/doc/code.html#GOPATH)
-- `dep` [for managing dependencies](https://github.com/golang/dep#installation)
+- Go 1.9 or later
+- [`$GOPATH`](https://golang.org/doc/code.html#GOPATH) is set
+- [`dep`](https://github.com/golang/dep#installation) for managing dependencies
 
   On Mac OSX using `brew`...
   ```
@@ -32,7 +56,7 @@ You prefer domain driven design, and believe that each database should only ever
   ```
 
 
-## Quick install (Untested)
+## Quick install
 
 ```
 $ go get -u github.com/pavelnikolov/eventsourcing-go/demo-articles
@@ -43,10 +67,9 @@ $ go get -u github.com/pavelnikolov/eventsourcing-go/demo-rss
 
 ## Clone the repository
 
-Either (I haven't tried it):
+Either:
 ```
-$ go get github.com/pavelnikolov/eventsourcing-go/...
-
+$ go get -u github.com/pavelnikolov/eventsourcing-go/...
 ```
 Or:
 ```
@@ -61,30 +84,14 @@ $ dep ensure
 ```
 
 ## Try it!
+Open in found different terminal windows
 
-- Run the articles API
-
-  ```
-  $ demo-articles &
-  ```
-
-- Run the GraphQL gateway API
-
-  ```
-  $ demo-graph
-  ```
-
-- Run the RSS generator
-
-  ```
-  $ demo-rss
-  ```
-
-- Run the Sitemap generator
-
-  ```
-  $ demo-sitemap
-  ```
+```
+go install ./cmd/demo-articles && demo-articles
+go install ./cmd/demo-graph && demo-graph
+go install ./cmd/demo-rss && demo-rss
+go install ./cmd/demo-sitemap && demo-sitemap
+```
 
 Navigate to the apps in your browser:
 - GraphiQL UI - http://localhost:4001/
@@ -110,19 +117,10 @@ Navigate to the apps in your browser:
 
    ```
    $ go generate github.com/pavelnikolov/eventsourcing-go/...
-   ```
-   
+   ``` 
+
    Or run `protoc` command (with the grpc plugin)
    
    ```
    $ protoc -I publishing/ publishing/publishing.proto --go_out=plugins=grpc:publishing
    ```
-
-### Rebuild  and run the apps 
-
-```
-go install ./cmd/demo-articles && demo-articles
-go install ./cmd/demo-graph && demo-graph
-go install ./cmd/demo-rss && demo-rss
-go install ./cmd/demo-sitemap && demo-sitemap
-```
