@@ -84,7 +84,7 @@ $ dep ensure
 ```
 
 ## Try it!
-Open in found different terminal windows
+Run in four different terminal windows:
 
 ```
 go install ./cmd/demo-articles && demo-articles
